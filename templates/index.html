@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гишүүдийн бүртгэл</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson:  #8B1A1A;
+  --gold:     #C9972A;
+  --gold-lt:  #E8C876;
+  --gold-dk:  #9A6F10;
+  --cream:    #FAF6EC;
+  --cream2:   #F2EBD6;
+  --ink:      #1C1208;
+  --ink2:     #4A3820;
+  --ink3:     #8A7558;
+  --surface:  #FFFDF7;
+  --border:   rgba(139,26,26,0.15);
+  --border2:  rgba(201,151,42,0.3);
+  --r:        12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* ── Öljii SVG pattern ─────────────────────────────────────────────────── */
+.olzii-bg {
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  background-color:var(--cream);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23C9972A' stroke-width='0.7' opacity='0.18'%3E%3Crect x='10' y='10' width='60' height='60' rx='2'/%3E%3Crect x='20' y='20' width='40' height='40' rx='1'/%3E%3Cline x1='10' y1='40' x2='20' y2='40'/%3E%3Cline x1='60' y1='40' x2='70' y2='40'/%3E%3Cline x1='40' y1='10' x2='40' y2='20'/%3E%3Cline x1='40' y1='60' x2='40' y2='70'/%3E%3Cline x1='10' y1='10' x2='20' y2='20'/%3E%3Cline x1='70' y1='10' x2='60' y2='20'/%3E%3Cline x1='10' y1='70' x2='20' y2='60'/%3E%3Cline x1='70' y1='70' x2='60' y2='60'/%3E%3Crect x='33' y='33' width='14' height='14' rx='1'/%3E%3Cline x1='33' y1='40' x2='20' y2='40'/%3E%3Cline x1='47' y1='40' x2='60' y2='40'/%3E%3Cline x1='40' y1='33' x2='40' y2='20'/%3E%3Cline x1='40' y1='47' x2='40' y2='60'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;
+}
+
+/* ── Layout ───────────────────────────────────────────────────────────── */
+.wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 16px 80px}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+header{
+  text-align:center;padding:40px 0 32px;
+  position:relative;
+}
+.header-ornament{
+  display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;
+}
+.orn-line{
+  flex:1;max-width:140px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.orn-diamond{
+  width:10px;height:10px;background:var(--gold);
+  transform:rotate(45deg);flex-shrink:0;
+}
+.soyombo{font-size:28px;color:var(--crimson);}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px;font-weight:700;letter-spacing:0.5px;
+  color:var(--crimson);line-height:1.2;
+}
+.subtitle{
+  font-size:13px;color:var(--ink3);margin-top:6px;letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.header-border{
+  margin-top:20px;height:3px;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 20%,var(--crimson) 50%,var(--gold) 80%,transparent 100%);
+  border-radius:2px;
+}
+
+/* ── Stats ───────────────────────────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.stat{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:18px 12px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.stat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--crimson),var(--gold));
+}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:var(--crimson);line-height:1}
+.stat-lbl{font-size:11px;color:var(--ink3);margin-top:5px;text-transform:uppercase;letter-spacing:0.07em}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────── */
+.tabs{
+  display:flex;gap:0;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:4px;margin-bottom:20px;
+}
+.tab{
+  flex:1;padding:10px 8px;border:none;background:none;
+  font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;color:var(--ink3);border-radius:9px;transition:all 0.2s;
+}
+.tab.active{background:var(--crimson);color:#fff;box-shadow:0 2px 8px rgba(139,26,26,0.3)}
+
+/* ── Section ─────────────────────────────────────────────────────────── */
+.section{display:none;animation:fadeUp 0.25s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── Search ──────────────────────────────────────────────────────────── */
+.search-wrap{position:relative;margin-bottom:14px}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:15px;pointer-events:none}
+input.search{
+  width:100%;padding:11px 14px 11px 40px;
+  border:1px solid var(--border2);border-radius:var(--r);
+  background:var(--surface);font-family:inherit;font-size:14px;color:var(--ink);
+  outline:none;transition:border-color 0.15s;
+}
+input.search:focus{border-color:var(--gold)}
+
+/* ── Month label ─────────────────────────────────────────────────────── */
+.month-lbl{
+  font-size:11px;font-weight:600;color:var(--gold-dk);
+  text-transform:uppercase;letter-spacing:0.1em;
+  margin:20px 0 8px;display:flex;align-items:center;gap:8px;
+}
+.month-lbl::after{content:'';flex:1;height:1px;background:var(--border2)}
+.month-lbl:first-child{margin-top:0}
+
+/* ── Member card ──────────────────────────────────────────────────────── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:14px 16px;margin-bottom:8px;
+  display:flex;align-items:center;gap:14px;
+  transition:transform 0.15s,box-shadow 0.15s;
+  position:relative;overflow:hidden;
+}
+.card::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--crimson),var(--gold));
+  border-radius:3px 0 0 3px;
+  opacity:0;transition:opacity 0.2s;
+}
+.card:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,26,26,0.1)}
+.card:hover::after{opacity:1}
+.card.bday-today{border-color:var(--gold);background:linear-gradient(135deg,#FFFDF7,#FFF8E6)}
+
+/* Avatar */
+.avatar{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:700;flex-shrink:0;letter-spacing:0.5px;
+  border:1.5px solid var(--border2);
+}
+.av0{background:#FFF0E6;color:#8B2E0A;border-color:#E8B07A}
+.av1{background:#F0F6FF;color:#0A3A8B;border-color:#7AAAE8}
+.av2{background:#F0FFF4;color:#0A5C2E;border-color:#7AE8AA}
+.av3{background:#FFF8E6;color:#8B5E0A;border-color:#E8D07A}
+.av4{background:#F5F0FF;color:#3A0A8B;border-color:#AA7AE8}
+.av5{background:#FFF0F5;color:#8B0A3A;border-color:#E87AAA}
+.av6{background:#F0FCFF;color:#0A5A8B;border-color:#7AD0E8}
+
+.card-info{flex:1;min-width:0}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink)}
+.card-meta{font-size:12px;color:var(--ink3);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dot{color:var(--gold-lt)}
+
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.badge-today  {background:#8B1A1A;color:#fff}
+.badge-week   {background:#7A4F00;color:#FFF0B0}
+.badge-month  {background:#E8F4EC;color:#0A5C2E}
+.badge-later  {background:var(--cream2);color:var(--ink3)}
+
+.actions{display:flex;gap:4px;flex-shrink:0}
+.ibtn{
+  background:none;border:none;cursor:pointer;
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink3);font-size:14px;transition:all 0.15s;
+}
+.ibtn.edit:hover{background:#E6F1FB;color:#185FA5}
+.ibtn.del:hover {background:#FCEBEB;color:#A32D2D}
+
+/* ── Form ────────────────────────────────────────────────────────────── */
+.form-wrap{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:28px;
+  position:relative;overflow:hidden;
+}
+.form-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--crimson),var(--gold),var(--crimson));
+}
+.form-heading{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:700;color:var(--crimson);margin-bottom:22px;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.frow{display:flex;flex-direction:column;gap:5px}
+.frow.full{grid-column:1/-1}
+.frow label{font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:0.07em}
+.frow input,.frow select{
+  padding:10px 13px;
+  border:1px solid var(--border2);border-radius:9px;
+  background:var(--cream);font-family:inherit;font-size:14px;color:var(--ink);
+  outline:none;transition:border-color 0.15s,background 0.15s;appearance:none;
+}
+.frow input:focus,.frow select:focus{border-color:var(--gold);background:var(--surface)}
+.form-actions{display:flex;gap:12px;margin-top:22px}
+.btn-save{
+  flex:1;padding:13px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--crimson),#6B1010);
+  color:#fff;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;
+  cursor:pointer;letter-spacing:0.5px;transition:opacity 0.15s,transform 0.1s;
+  box-shadow:0 3px 12px rgba(139,26,26,0.35);
+}
+.btn-save:hover{opacity:0.9}
+.btn-save:active{transform:scale(0.98)}
+.btn-cancel{
+  padding:13px 22px;border:1px solid var(--border2);border-radius:10px;
+  background:none;font-family:inherit;font-size:14px;color:var(--ink2);
+  cursor:pointer;transition:background 0.15s;
+}
+.btn-cancel:hover{background:var(--cream2)}
+
+/* ── Ornament divider ─────────────────────────────────────────────────── */
+.orn-divider{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin:6px 0 18px;
+}
+.orn-divider span{font-size:18px;color:var(--gold)}
+.orn-divider::before,.orn-divider::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2));
+}
+.orn-divider::after{background:linear-gradient(90deg,var(--border2),transparent)}
+
+/* ── Empty ───────────────────────────────────────────────────────────── */
+.empty{text-align:center;padding:52px 20px}
+.empty-icon{font-size:38px;margin-bottom:12px}
+.empty-txt{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--ink2)}
+.empty-sub{font-size:13px;color:var(--ink3);margin-top:6px}
+
+/* ── Toast ───────────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(90px);
+  background:var(--ink);color:#fff;
+  border-radius:30px;padding:11px 26px;
+  font-size:14px;font-weight:500;z-index:999;
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  white-space:nowrap;border:1px solid rgba(201,151,42,0.4);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── Olzii corner decorations ─────────────────────────────────────────── */
+.corner-decor{
+  position:fixed;width:120px;height:120px;
+  opacity:0.12;pointer-events:none;z-index:0;
+}
+.corner-decor.tl{top:0;left:0}
+.corner-decor.tr{top:0;right:0;transform:scaleX(-1)}
+.corner-decor.bl{bottom:0;left:0;transform:scaleY(-1)}
+.corner-decor.br{bottom:0;right:0;transform:scale(-1,-1)}
+
+@media(max-width:520px){
+  h1{font-size:26px}
+  .stats{grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat-num{font-size:28px}
+  .form-grid{grid-template-columns:1fr}
+  .frow.full{grid-column:1}
+  .tab{font-size:11px;padding:9px 4px}
+  .corner-decor{width:80px;height:80px}
+}
+</style>
+</head>
+<body>
+
+<!-- Corner SVG decorations (Öljii knot motif) -->
+<svg class="corner-decor tl" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0 L120 0 L120 10 L10 10 L10 120 L0 120 Z" fill="#C9972A"/>
+  <path d="M20 0 L20 20 L0 20" stroke="#8B1A1A" stroke-width="2"/>
+  <rect x="30" y="30" width="40" height="40" stroke="#C9972A" stroke-width="1.5" fill="none"/>
+  <rect x="40" y="40" width="20" height="20" stroke="#8B1A1A" stroke-width="1" fill="none"/>
+  <line x1="30" y1="50" x2="40" y2="50" stroke="#C9972A" stroke-width="1.5"/>
+  <line x1="50" y1="30" x2="50" y2="40" stroke="#C9972A" stroke-width="1.5"/>
+  <line x1="70" y1="50" x2="60" y2="50" stroke="#C9972A" stroke-width="1.5"/>
+  <line x1="50" y1="70" x2="50" y2="60" stroke="#C9972A" stroke-width="1.5"/>
+</svg>
+<svg class="corner-decor tr" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0 L120 0 L120 10 L10 10 L10 120 L0 120 Z" fill="#C9972A"/>
+  <path d="M20 0 L20 20 L0 20" stroke="#8B1A1A" stroke-width="2"/>
+  <rect x="30" y="30" width="40" height="40" stroke="#C9972A" stroke-width="1.5" fill="none"/>
+  <rect x="40" y="40" width="20" height="20" stroke="#8B1A1A" stroke-width="1" fill="none"/>
+  <line x1="30" y1="50" x2="40" y2="50" stroke="#C9972A" stroke-width="1.5"/>
+  <line x1="50" y1="30" x2="50" y2="40" stroke="#C9972A" stroke-width="1.5"/>
+  <line x1="70" y1="50" x2="60" y2="50" stroke="#C9972A" stroke-width="1.5"/>
+  <line x1="50" y1="70" x2="50" y2="60" stroke="#C9972A" stroke-width="1.5"/>
+</svg>
+<svg class="corner-decor bl" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0 L120 0 L120 10 L10 10 L10 120 L0 120 Z" fill="#C9972A"/>
+  <rect x="30" y="30" width="40" height="40" stroke="#C9972A" stroke-width="1.5" fill="none"/>
+  <rect x="40" y="40" width="20" height="20" stroke="#8B1A1A" stroke-width="1" fill="none"/>
+</svg>
+<svg class="corner-decor br" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0 L120 0 L120 10 L10 10 L10 120 L0 120 Z" fill="#C9972A"/>
+  <rect x="30" y="30" width="40" height="40" stroke="#C9972A" stroke-width="1.5" fill="none"/>
+  <rect x="40" y="40" width="20" height="20" stroke="#8B1A1A" stroke-width="1" fill="none"/>
+</svg>
+
+<div class="olzii-bg"></div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <div class="header-ornament">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <span class="soyombo">᠀</span>
+      <div class="orn-diamond"></div>
+      <div class="orn-line"></div>
+    </div>
+    <h1>Гишүүдийн Бүртгэл</h1>
+    <div class="subtitle">Төрийн байгууллага · Нэгдсэн мэдээллийн сан</div>
+    <div class="header-border"></div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-num" id="s-total">—</div><div class="stat-lbl">Нийт гишүүн</div></div>
+    <div class="stat"><div class="stat-num" id="s-month">—</div><div class="stat-lbl">Энэ сард</div></div>
+    <div class="stat"><div class="stat-num" id="s-soon" style="color:var(--gold-dk)">—</div><div class="stat-lbl">7 хоногт</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('birthday')">🎂 Төрсөн өдөр</button>
+    <button class="tab" onclick="showTab('members')">👥 Гишүүд</button>
+    <button class="tab" onclick="showTab('add')">+ Бүртгэх</button>
+  </div>
+
+  <!-- Birthday tab -->
+  <div id="birthday" class="section active">
+    <div id="bday-list"></div>
+  </div>
+
+  <!-- Members tab -->
+  <div id="members" class="section">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search" type="text" id="search-box" placeholder="Нэр, утас, албан тушаалаар хайх..." oninput="searchMembers(this.value)">
+    </div>
+    <div id="members-list"></div>
+  </div>
+
+  <!-- Add/Edit tab -->
+  <div id="add" class="section">
+    <div class="form-wrap">
+      <div class="form-heading" id="form-heading">✦ Шинэ гишүүн бүртгэх</div>
+      <div class="orn-divider"><span>❖</span></div>
+      <div class="form-grid">
+        <div class="frow full">
+          <label>Овог нэр</label>
+          <input type="text" id="f-name" placeholder="Д. Батбаяр">
+        </div>
+        <div class="frow">
+          <label>Утасны дугаар</label>
+          <input type="tel" id="f-phone" placeholder="+976 9900 0000">
+        </div>
+        <div class="frow">
+          <label>Төрсөн өдөр</label>
+          <input type="date" id="f-bday">
+        </div>
+        <div class="frow">
+          <label>Албан тушаал</label>
+          <input type="text" id="f-position" placeholder="Дарга, Мэргэжилтэн...">
+        </div>
+        <div class="frow">
+          <label>Нэгж / Газар</label>
+          <input type="text" id="f-dept" placeholder="Хэлтэс, Газрын нэр...">
+        </div>
+      </div>
+      <input type="hidden" id="f-id">
+      <div class="form-actions">
+        <button class="btn-save" onclick="saveMember()">Хадгалах</button>
+        <button class="btn-cancel" onclick="cancelEdit()">Болих</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MN_MONTHS=['1-р сар','2-р сар','3-р сар','4-р сар','5-р сар','6-р сар',
+                 '7-р сар','8-р сар','9-р сар','10-р сар','11-р сар','12-р сар'];
+const COLORS=['av0','av1','av2','av3','av4','av5','av6'];
+
+function colorFor(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%COLORS.length;return COLORS[h]}
+function initials(n){return n.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+
+function badgeFor(days){
+  if(days===0) return['badge-today','🎉 Өнөөдөр!'];
+  if(days<=7)  return['badge-week', days+' өдөр'];
+  if(days<=30) return['badge-month',days+' өдөр'];
+  return['badge-later',days+' өдрийн дараа'];
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+async function api(path,opts={}){
+  const r=await fetch(path,{headers:{'Content-Type':'application/json'},...opts});
+  return r.json();
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────
+async function loadStats(){
+  const d=await api('/api/stats');
+  document.getElementById('s-total').textContent=d.total;
+  document.getElementById('s-month').textContent=d.this_month;
+  document.getElementById('s-soon').textContent=d.soon;
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────
+function showTab(tab){
+  ['birthday','members','add'].forEach((t,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
+    document.getElementById(t).classList.toggle('active',t===tab);
+  });
+  if(tab==='birthday') loadBirthdays();
+  if(tab==='members')  loadMembers('');
+}
+
+// ── Birthday tab ───────────────────────────────────────────────────────
+async function loadBirthdays(){
+  const d=await api('/api/members');
+  const list=document.getElementById('bday-list');
+  if(!d.members.length){
+    list.innerHTML=`<div class="empty"><div class="empty-icon">🎂</div><div class="empty-txt">Бүртгэсэн гишүүн байхгүй</div><div class="empty-sub">+ Бүртгэх таб дээр дарна уу</div></div>`;
+    return;
+  }
+  const sorted=[...d.members].filter(m=>m.birthday).sort((a,b)=>a.days_until-b.days_until);
+  let html='',lastMonth='';
+  sorted.forEach(m=>{
+    const month=MN_MONTHS[new Date(m.birthday).getMonth()];
+    if(month!==lastMonth){html+=`<div class="month-lbl">${month}</div>`;lastMonth=month;}
+    const[bc,bl]=badgeFor(m.days_until);
+    html+=`<div class="card${m.days_until===0?' bday-today':''}">
+      <div class="avatar ${colorFor(m.name)}">${initials(m.name)}</div>
+      <div class="card-info">
+        <div class="card-name">${m.name}</div>
+        <div class="card-meta">
+          <span>${m.phone}</span>
+          ${m.position?`<span class="dot">·</span><span>${m.position}</span>`:''}
+          ${m.dept?`<span class="dot">·</span><span>${m.dept}</span>`:''}
+          <span class="dot">·</span><span>${m.bday_display}</span>
+        </div>
+      </div>
+      <span class="badge ${bc}">${bl}</span>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+
+// ── Members tab ────────────────────────────────────────────────────────
+async function loadMembers(q){
+  const d=await api('/api/members'+(q?`?q=${encodeURIComponent(q)}`:'')); 
+  const list=document.getElementById('members-list');
+  if(!d.members.length){
+    list.innerHTML=`<div class="empty"><div class="empty-icon">👥</div><div class="empty-txt">${q?'Олдсонгүй':'Гишүүн байхгүй'}</div></div>`;
+    return;
+  }
+  list.innerHTML=d.members.map(m=>`
+    <div class="card">
+      <div class="avatar ${colorFor(m.name)}">${initials(m.name)}</div>
+      <div class="card-info">
+        <div class="card-name">${m.name}</div>
+        <div class="card-meta">
+          <span>${m.phone}</span>
+          ${m.position?`<span class="dot">·</span><span>${m.position}</span>`:''}
+          ${m.dept?`<span class="dot">·</span><span>${m.dept}</span>`:''}
+          ${m.birthday?`<span class="dot">·</span><span>🎂 ${m.bday_display}</span>`:''}
+        </div>
+      </div>
+      <div class="actions">
+        <button class="ibtn edit" onclick="editMember(${m.id})" title="Засах">✏️</button>
+        <button class="ibtn del"  onclick="deleteMember(${m.id},'${m.name.replace(/'/g,"\\'")}')  " title="Устгах">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let searchTimer;
+function searchMembers(q){
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>loadMembers(q),300);
+}
+
+// ── Save ───────────────────────────────────────────────────────────────
+async function saveMember(){
+  const id=document.getElementById('f-id').value;
+  const body={
+    name:    document.getElementById('f-name').value.trim(),
+    phone:   document.getElementById('f-phone').value.trim(),
+    birthday:document.getElementById('f-bday').value,
+    position:document.getElementById('f-position').value.trim(),
+    dept:    document.getElementById('f-dept').value.trim(),
+  };
+  if(!body.name||!body.phone||!body.birthday){toast('⚠️ Нэр, утас, төрсөн өдөр заавал шаардлагатай');return;}
+  const url=id?`/api/members/${id}`:'/api/members';
+  const method=id?'PUT':'POST';
+  const res=await api(url,{method,body:JSON.stringify(body)});
+  if(res.error){toast('⚠️ '+res.error);return;}
+  toast(id?'✅ Мэдээлэл шинэчлэгдлээ':'✅ Гишүүн бүртгэгдлээ — '+body.name);
+  resetForm();
+  loadStats();
+  showTab('members');
+}
+
+// ── Edit ───────────────────────────────────────────────────────────────
+async function editMember(id){
+  const d=await api('/api/members');
+  const m=d.members.find(x=>x.id===id);
+  if(!m)return;
+  document.getElementById('f-name').value    =m.name||'';
+  document.getElementById('f-phone').value   =m.phone||'';
+  document.getElementById('f-bday').value    =m.birthday||'';
+  document.getElementById('f-position').value=m.position||'';
+  document.getElementById('f-dept').value    =m.dept||'';
+  document.getElementById('f-id').value      =id;
+  document.getElementById('form-heading').textContent='✦ Мэдээлэл засах';
+  showTab('add');
+}
+
+// ── Delete ─────────────────────────────────────────────────────────────
+async function deleteMember(id,name){
+  if(!confirm(`"${name}"-г бүртгэлээс хасах уу?`))return;
+  await api(`/api/members/${id}`,{method:'DELETE'});
+  toast('🗑️ Устгагдлаа');
+  loadStats();
+  loadMembers(document.getElementById('search-box')?.value||'');
+}
+
+function cancelEdit(){resetForm();showTab('members')}
+function resetForm(){
+  ['f-name','f-phone','f-bday','f-position','f-dept','f-id'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('form-heading').textContent='✦ Шинэ гишүүн бүртгэх';
+}
+
+// ── Init ───────────────────────────────────────────────────────────────
+loadStats();
+loadBirthdays();
+</script>
+</body>
+</html>
