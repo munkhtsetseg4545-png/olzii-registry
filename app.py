@@ -1,15 +1,19 @@
 """
-Төрийн байгууллагын гишүүдийн бүртгэл
-Ажиллуулах: python app.py
-Нээх: http://localhost:5000
+Хүслийн зүй ТББ — Гишүүдийн бүртгэл
+Нэвтрэх: admin / admin4545
 """
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import sqlite3, os
 from datetime import date, datetime
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = "khusliinzui2026secretkey"
 DB = os.path.join(os.path.dirname(__file__), "members.db")
+
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin4545"
 
 
 def get_db():
@@ -34,10 +38,16 @@ def init_db():
         conn.commit()
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
 
-def days_until_birthday(bday_str: str) -> int:
-    """Төрсөн өдрийг хүртэл хэдэн өдөр үлдсэнийг тооцно."""
+
+def days_until_birthday(bday_str):
     try:
         bday = datetime.strptime(bday_str, "%Y-%m-%d").date()
         today = date.today()
@@ -61,14 +71,34 @@ def enrich(row):
     return d
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session["logged_in"] = True
+            return redirect(url_for("index"))
+        else:
+            error = "Нэвтрэх нэр эсвэл нууц үг буруу байна"
+    return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
 
 @app.route("/api/members", methods=["GET"])
+@login_required
 def list_members():
     q = request.args.get("q", "").strip()
     with get_db() as conn:
@@ -80,12 +110,12 @@ def list_members():
         else:
             rows = conn.execute("SELECT * FROM members ORDER BY name").fetchall()
     members = [enrich(r) for r in rows]
-    # Sort upcoming birthdays
     upcoming = sorted([m for m in members if m["days_until"] <= 30], key=lambda x: x["days_until"])
     return jsonify({"members": members, "upcoming": upcoming, "total": len(members)})
 
 
 @app.route("/api/members", methods=["POST"])
+@login_required
 def add_member():
     data = request.json
     name     = (data.get("name")     or "").strip()
@@ -106,6 +136,7 @@ def add_member():
 
 
 @app.route("/api/members/<int:mid>", methods=["PUT"])
+@login_required
 def update_member(mid):
     data = request.json
     name     = (data.get("name")     or "").strip()
@@ -128,6 +159,7 @@ def update_member(mid):
 
 
 @app.route("/api/members/<int:mid>", methods=["DELETE"])
+@login_required
 def delete_member(mid):
     with get_db() as conn:
         conn.execute("DELETE FROM members WHERE id=?", (mid,))
@@ -136,11 +168,12 @@ def delete_member(mid):
 
 
 @app.route("/api/stats")
+@login_required
 def stats():
     today = date.today()
     with get_db() as conn:
-        total   = conn.execute("SELECT COUNT(*) FROM members").fetchone()[0]
-        rows    = conn.execute("SELECT birthday FROM members").fetchall()
+        total = conn.execute("SELECT COUNT(*) FROM members").fetchone()[0]
+        rows  = conn.execute("SELECT birthday FROM members").fetchall()
     this_month = sum(1 for r in rows if datetime.strptime(r[0], "%Y-%m-%d").month == today.month)
     soon       = sum(1 for r in rows if days_until_birthday(r[0]) <= 7)
     return jsonify({"total": total, "this_month": this_month, "soon": soon})
