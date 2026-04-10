@@ -179,6 +179,27 @@ def stats():
     return jsonify({"total": total, "this_month": this_month, "soon": soon})
 
 
+@app.route("/register")
+def register_page():
+    return render_template("register.html")
+
+@app.route("/api/register", methods=["POST"])
+def api_register():
+    data = request.json
+    name     = (data.get("name")     or "").strip()
+    phone    = (data.get("phone")    or "").strip()
+    birthday = (data.get("birthday") or "").strip()
+    position = (data.get("position") or "").strip()
+    dept     = (data.get("dept")     or "").strip()
+    if not name or not phone or not birthday:
+        return jsonify({"error": "Нэр, утас, төрсөн өдөр заавал шаардлагатай"}), 400
+    with get_db() as conn:
+        conn.execute(
+            "INSERT INTO members (name, phone, birthday, position, dept) VALUES (?,?,?,?,?)",
+            (name, phone, birthday, position, dept)
+        )
+        conn.commit()
+    return jsonify({"ok": True}), 201
 if __name__ == "__main__":
     init_db()
     print("\n✅  Сервер эхэллээ →  http://localhost:5000\n")
