@@ -6,135 +6,47 @@
 <title>Бүртгүүлэх — Хүслийн зүй ТББ</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --crimson: #8B1A1A;
-  --gold:    #C9972A;
-  --gold-lt: #E8C876;
-  --cream:   #FAF6EC;
-  --cream2:  #F2EBD6;
-  --surface: #FFFFFF;
-  --ink:     #1C1208;
-  --ink2:    #4A3820;
-  --ink3:    #8A7558;
-  --border:  rgba(201,151,42,0.3);
-  --green:   #0F6E56;
-  --green-bg:#E1F5EE;
-}
+:root{--crimson:#8B1A1A;--gold:#C9972A;--cream:#FAF6EC;--cream2:#F2EBD6;--surface:#FFFFFF;--ink:#1C1208;--ink2:#4A3820;--ink3:#8A7558;--border:rgba(201,151,42,0.3);--green:#0F6E56;}
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:'Noto Sans',sans-serif;
-  background:var(--cream);
-  min-height:100vh;
-  padding:32px 16px 60px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23C9972A' stroke-width='0.7' opacity='0.15'%3E%3Crect x='10' y='10' width='60' height='60' rx='2'/%3E%3Crect x='20' y='20' width='40' height='40' rx='1'/%3E%3Cline x1='10' y1='40' x2='20' y2='40'/%3E%3Cline x1='60' y1='40' x2='70' y2='40'/%3E%3Cline x1='40' y1='10' x2='40' y2='20'/%3E%3Cline x1='40' y1='60' x2='40' y2='70'/%3E%3Crect x='33' y='33' width='14' height='14' rx='1'/%3E%3C/g%3E%3C/svg%3E");
-}
+body{font-family:'Noto Sans',sans-serif;background:var(--cream);min-height:100vh;padding:32px 16px 60px;}
 .wrap{max-width:480px;margin:0 auto;}
-
-/* Header */
 .header{text-align:center;margin-bottom:28px;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--crimson);}
 .org{font-size:12px;color:var(--ink3);margin-top:4px;letter-spacing:0.07em;text-transform:uppercase;}
 .orn{display:flex;align-items:center;gap:8px;margin:16px 0;}
 .orn-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .orn span{color:var(--gold);font-size:14px;}
-
-/* Card */
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:28px 24px;
-  position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:4px;
-  background:linear-gradient(90deg,var(--crimson),var(--gold),var(--crimson));
-}
-.card-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:20px;font-weight:700;color:var(--crimson);
-  margin-bottom:6px;
-}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--crimson),var(--gold),var(--crimson));}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--crimson);margin-bottom:6px;}
 .card-sub{font-size:13px;color:var(--ink3);margin-bottom:22px;}
-
-/* Form */
 .frow{margin-bottom:16px;}
-.frow label{
-  display:block;font-size:11px;font-weight:600;
-  color:var(--ink2);text-transform:uppercase;
-  letter-spacing:0.07em;margin-bottom:5px;
-}
-.frow input,.frow select{
-  width:100%;padding:11px 14px;
-  border:1px solid var(--border);border-radius:9px;
-  background:var(--cream);font-family:inherit;
-  font-size:15px;color:var(--ink);
-  outline:none;transition:border-color 0.15s,background 0.15s;
-  appearance:none;
-}
-.frow input:focus,.frow select:focus{
-  border-color:var(--gold);background:var(--surface);
-}
+.frow label{display:block;font-size:11px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;}
+.frow input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:9px;background:var(--cream);font-family:inherit;font-size:15px;color:var(--ink);outline:none;transition:border-color 0.15s,background 0.15s;}
+.frow input:focus{border-color:var(--gold);background:var(--surface);}
 .required{color:var(--crimson);}
-
-.btn{
-  width:100%;padding:14px;border:none;border-radius:10px;
-  background:linear-gradient(135deg,var(--crimson),#6B1010);
-  color:#fff;font-family:'Cormorant Garamond',serif;
-  font-size:19px;font-weight:700;cursor:pointer;
-  letter-spacing:0.5px;margin-top:6px;
-  box-shadow:0 3px 12px rgba(139,26,26,0.3);
-  transition:opacity 0.15s,transform 0.1s;
-}
-.btn:hover{opacity:0.9;}
-.btn:active{transform:scale(0.98);}
-.btn:disabled{opacity:0.6;cursor:not-allowed;}
-
-/* Success */
-.success{
-  text-align:center;padding:40px 20px;display:none;
-}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--crimson),#6B1010);color:#fff;font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;cursor:pointer;margin-top:6px;box-shadow:0 3px 12px rgba(139,26,26,0.3);transition:opacity 0.15s;}
+.btn:hover{opacity:0.9;}.btn:disabled{opacity:0.6;cursor:not-allowed;}
+.success{text-align:center;padding:40px 20px;display:none;}
 .success-icon{font-size:52px;margin-bottom:16px;}
-.success-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:24px;font-weight:700;color:var(--green);
-  margin-bottom:8px;
-}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--green);margin-bottom:8px;}
 .success-sub{font-size:14px;color:var(--ink3);line-height:1.6;}
-
-/* Error */
-.error-msg{
-  background:#FCEBEB;color:#A32D2D;
-  border-radius:8px;padding:10px 14px;
-  font-size:13px;margin-bottom:14px;
-  display:none;
-}
-
-/* Note */
-.note{
-  background:var(--cream2);border:1px solid var(--border);
-  border-radius:10px;padding:12px 14px;
-  font-size:12px;color:var(--ink3);margin-top:16px;
-  line-height:1.6;
-}
+.error-msg{background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
+.note{background:var(--cream2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--ink3);margin-top:16px;line-height:1.6;}
 .note strong{color:var(--ink2);}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="header">
     <div class="logo">᠀ Хүслийн зүй ТББ</div>
     <div class="org">Гишүүний бүртгэлийн маягт</div>
     <div class="orn"><div class="orn-line"></div><span>❖</span><div class="orn-line"></div></div>
   </div>
-
   <div class="card">
     <div class="card-title">✦ Гишүүний мэдээлэл</div>
     <div class="card-sub">Доорх талбаруудыг бүрэн бөглөнө үү</div>
-
     <div class="error-msg" id="error-msg"></div>
-
     <div id="form-area">
       <div class="frow">
         <label>Овог нэр <span class="required">*</span></label>
@@ -148,77 +60,32 @@ body{
         <label>Төрсөн өдөр <span class="required">*</span></label>
         <input type="date" id="f-bday">
       </div>
-      <div class="frow">
-        <label>Албан тушаал</label>
-        <input type="text" id="f-position" placeholder="Мэргэжилтэн, Дарга...">
-      </div>
-      <div class="frow">
-        <label>Нэгж / Хэлтэс</label>
-        <input type="text" id="f-dept" placeholder="Хэлтсийн нэр">
-      </div>
-
       <button class="btn" id="submit-btn" onclick="submitForm()">Бүртгүүлэх</button>
-
-      <div class="note">
-        <strong>Анхаарал:</strong> Таны мэдээлэл зөвхөн байгууллагын дотоод бүртгэлд ашиглагдах бөгөөд бусдад дамжуулахгүй.
-      </div>
+      <div class="note"><strong>Анхаарал:</strong> Таны мэдээлэл зөвхөн байгууллагын дотоод бүртгэлд ашиглагдах бөгөөд бусдад дамжуулахгүй.</div>
     </div>
-
     <div class="success" id="success-area">
       <div class="success-icon">🎉</div>
       <div class="success-title">Амжилттай бүртгэгдлээ!</div>
-      <div class="success-sub">
-        Таны мэдээлэл хүлээн авагдлаа.<br>
-        Хүслийн зүй ТББ-д тавтай морил!
-      </div>
+      <div class="success-sub">Таны мэдээлэл хүлээн авагдлаа.<br>Хүслийн зүй ТББ-д тавтай морил!</div>
     </div>
   </div>
-
 </div>
-
 <script>
-async function submitForm() {
-  const name     = document.getElementById('f-name').value.trim();
-  const phone    = document.getElementById('f-phone').value.trim();
-  const birthday = document.getElementById('f-bday').value;
-  const position = document.getElementById('f-position').value.trim();
-  const dept     = document.getElementById('f-dept').value.trim();
-  const errEl    = document.getElementById('error-msg');
-
-  errEl.style.display = 'none';
-
-  if (!name || !phone || !birthday) {
-    errEl.textContent = '⚠️ Нэр, утас, төрсөн өдрийг заавал бөглөнө үү';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Илгээж байна...';
-
-  try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({name, phone, birthday, position, dept})
-    });
-    const data = await res.json();
-    if (res.ok) {
-      document.getElementById('form-area').style.display = 'none';
-      document.getElementById('success-area').style.display = 'block';
-    } else {
-      errEl.textContent = '⚠️ ' + (data.error || 'Алдаа гарлаа');
-      errEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Бүртгүүлэх';
-    }
-  } catch(e) {
-    errEl.textContent = '⚠️ Холболтын алдаа гарлаа. Дахин оролдоно уу.';
-    errEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Бүртгүүлэх';
-  }
+async function submitForm(){
+  const name=document.getElementById('f-name').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  const birthday=document.getElementById('f-bday').value;
+  const errEl=document.getElementById('error-msg');
+  errEl.style.display='none';
+  if(!name||!phone||!birthday){errEl.textContent='⚠️ Нэр, утас, төрсөн өдрийг заавал бөглөнө үү';errEl.style.display='block';return;}
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.textContent='Илгээж байна...';
+  try{
+    const res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,phone,birthday,position:'',dept:''})});
+    const data=await res.json();
+    if(res.ok){document.getElementById('form-area').style.display='none';document.getElementById('success-area').style.display='block';}
+    else{errEl.textContent='⚠️ '+(data.error||'Алдаа гарлаа');errEl.style.display='block';btn.disabled=false;btn.textContent='Бүртгүүлэх';}
+  }catch(e){errEl.textContent='⚠️ Холболтын алдаа.';errEl.style.display='block';btn.disabled=false;btn.textContent='Бүртгүүлэх';}
 }
 </script>
 </body>
